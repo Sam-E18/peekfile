@@ -1,10 +1,18 @@
 #!/bin/bash
 
-#Print the first and the last lines of an input file, with 3 dots in the middle of it.
+#Print the first three and the las three lines(per default) of an input file
 #(You need to put the numeber of lines after the file).
-#Ejm. bash peek.sh tables/target_prokaryotes.txt 3
+#Ejm. bash peek.sh tables/target_prokaryotes.txt 4(put the number of lines you want 3 or 4 or etc)
 
-head -n "$2" "$1"
+
+if [[ -z "$2" ]]; then
+ num_of_lines=3 
+else
+ num_of_lines=$2
+fi
+
+head -n "$num_of_lines" "$1"
+
 echo "..."
-tail -n "$2" "$1"
 
+tail -n "$num_of_lines" "$1"
