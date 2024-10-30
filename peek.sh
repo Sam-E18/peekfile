@@ -6,13 +6,20 @@
 
 
 if [[ -z "$2" ]]; then
- num_of_lines=3 
+ num_of_lines=3
 else
  num_of_lines=$2
 fi
 
-head -n "$num_of_lines" "$1"
+total_lines=$(wc -l < "$1")
 
-echo "..."
+if [[ "$total_lines" -le $((2 * num_lines)) ]]; then
+ cat "$1"
+else
+ echo "Warning: The file is very long. Showing the first and last $num_lines:"
+ head -n "$num_of_lines" "$1"
 
-tail -n "$num_of_lines" "$1"
+ echo "..."
+
+ tail -n "$num_of_lines" "$1"
+fi
