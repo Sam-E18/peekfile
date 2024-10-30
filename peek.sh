@@ -1,8 +1,8 @@
 #!/bin/bash
 
-#Print the first three and the las three lines(per default) of an input file
-#(You need to put the numeber of lines after the file).
-#Ejm. bash peek.sh tables/target_prokaryotes.txt 4(put the number of lines you want 3 or 4 or etc)
+#Print the first 3 and the last 3 lines(per default) of an input file
+#Ejm. bash peek.sh tables/target_prokaryotes.txt 4( You can put the number of lines you want to print, 3 or 4 or etc).
+#This script print the full imput file if contain 2x or less lines, if not, print a warning message saying that the file is long.
 
 
 if [[ -z "$2" ]]; then
