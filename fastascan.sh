@@ -7,20 +7,17 @@
 #Print the summary report
 echo "Summary:"
 # Count .fa or .fasta files
-fa_fasta_count=$(find . -type f -name "*.fa" | wc -l)
-echo "Number of .fa files: $fa_fasta_count"
-
-fasta_count=$(find . -type f -name "*.fasta" | wc -l)
-echo "Number of .fasta files: $fasta_count"
-
-#Find the hidden and symlink files fasta files
-NHIDDEN=$(find . -type f -type l -o -name "*.fa"  | wc -l); 
-if [[ $NHIDDEN -gt 0 ]]; then echo "There are $NHIDDEN hidden .fa files." ; else echo "No hidden files :/"; fi
+fa_fasta_count=$(find . -type f  \( -name "*.fa" -o -name "*.fasta" \) | wc -l)
+#If the number of fasta file is greater than 0, then echo the number of file, 
+#if not then print there are no files 
+if [[ $fa_fasta_count -gt 0 ]]; then echo "There are $fa_fasta_count Fasta files (.fa or .fasta)." ; else echo "There are no .fa or .fasta files. :("; fi
 
 
-NHIDDEN=$(find . -type f -type l -o -name "*.fasta"  | wc -l); 
-if [[ $NHIDDEN -gt 0 ]]; then echo "There are $NHIDDEN hidden .fasta files." ; else echo "No hidden files :/"; fi
+#Count the fasta files that are hidden.
+fa_fasta_count2=$(find . -type f  \( -name ".*.fa" -o -name ".*.fasta" \) | wc -l)
+if [[ $fa_fasta_count -gt 0 ]]; then echo "There are $fa_fasta_count2 hidden Fasta files (.fa or .fasta)." ; else echo "There are no fasta files hidden . :("; fi
 
-####How many unique fasta IDs contains
+
+
 
 
