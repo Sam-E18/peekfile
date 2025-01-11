@@ -74,40 +74,29 @@ for file in $fa_fasta_files; do
         echo "File type: Regular file"
     fi
 
-    # Count the sequences in the file
-    seq_count=$(grep -c '^>' "$file")
-    echo "Number of sequences: $seq_count" #Print the number of sequences into the fastas files.
+     # Count the sequences in the file
+      seq_count=$(grep -c '^>' "$file")
+         echo "Number of sequences: $seq_count" #Print the number of sequences into the fastas files.
 
-    # Calculate the total length of sequences
-    length=$(grep -v '^>' "$file" | sed 's/-//g; s/ //g; s/@//g; s/%//g; s/#//g; s/\n//g' | wc -c) #sed to avoid count rare symbols.
-         echo "Total length: $length"
+     # Calculate the total length of the sequences and clear the content lines.
+     filtered_seq=$(grep -v '^>' "$file" | sed 's/-//g; s/ //g; s/@//g; s/%//g; s/#//g; s/\n//g')
+     length=$(echo -n "$filtered_seq" | wc -c) # This remains for the original total length count.
+      echo "Total length: $length"
+      # Extract just the filename without the path using awk
+          filename=$(echo "$file" | awk -F'/' '{print $NF}')
 
-    # Determine if the file contains amino acid or nucleotide sequences
-    # Check if the file is text before processing
-     if file "$file" | grep -q 'text'; then
-    nucleotides=$(grep -v '^>' "$file" | grep -E -o -i '[CTAUG]' | wc -l) #Count nucleotides
-    amino_acids=$(grep -v '^>' "$file" | grep -E -o -i '[ACDEFGHIKLMNPQRSTVWYBZX*]' | wc -l) #Count amino acids
-    total_chars=$(grep -v '^>' "$file" | grep -E -o '[A-Za-z]' | wc -l) #Count total characters
-
-     # Determine content
-    if [[ $nucleotides -eq 0 && $amino_acids -eq 0 ]]; then
-         echo "The file '$file' contains UNRECOGNIZABLE sequences."
-    elif [[ $nucleotides -gt 0 && $amino_acids -eq 0 ]]; then
-         echo "The file '$file' contains NUCLEOTIDES sequences."
-    elif [[ $amino_acids -gt 0 && $nucleotides -eq 0 ]]; then
-         echo "The file '$file' contains AMINO sequences."
-    elif [[ $nucleotides -gt 0 && $amino_acids -gt 0 ]]; then
-         echo "The file '$file' contains a combination of nucleotide and amino acid sequences."
-    else
-         echo "The file '$file' contains MIXED or UNCLEAR content."
-    fi
-    else
-    # Handle binary or unreadable files
-         echo "Warning: The file '$file' appears to be binary or unreadable."
-         echo "The file '$file' contains UNRECOGNIZABLE sequences."
-    fi
-   
-
+      # Use grep -E to determine the sequence type
+      if ! echo -n "$filtered_seq" | grep -E -q '[TtMmKk]'; then
+         echo "The file '$filename' contains RNA sequences."
+      elif ! echo -n "$filtered_seq" | grep -E -q '[UuMmKk]'; then
+         echo "The file '$filename' contains DNA sequences."
+      elif echo -n "$filtered_seq" | grep -E -q '[MmKk]'; then
+         echo "The file '$filename' contains PROTEIN sequences."
+      else
+    echo "The file '$filename' contains UNKNOWN sequences."
+     fi
+     
+        
    #6 Display content of the file based on line count
     line_count=$(wc -l < "$file")
     if [[ "$numlines" -eq 0 ]]; then
